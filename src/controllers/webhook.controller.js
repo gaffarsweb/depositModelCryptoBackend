@@ -1,0 +1,62 @@
+const Wallet = require('../models/Wallet');
+const Balance = require('../models/Balance');
+const Ledger = require('../models/Ledger');
+
+
+const Network = require('../models/Network');
+const Token = require('../models/Token');
+
+
+exports.handleAlchemyEvm = async (payload) => {
+  const activities = payload.event?.activity || [];
+  console.log('activies', activities)
+  for (const tx of activities) {
+    console.log('trans', tx)
+    const network = await Network.findOne({
+      chainId: Number(tx.chainId),
+      type: 'EVM',
+      isEnabled: true
+    });
+    if (!network) continue;
+
+    const token = tx.asset === network.nativeSymbol
+      ? await Token.findOne({
+        networkId: network._id,
+        isNative: true
+      })
+      : await Token.findOne({
+        networkId: network._id,
+        address: tx.rawContract?.address
+      });
+
+    if (!token) continue;
+
+    const wallet = await Wallet.findOne({
+      networkId: network._id,
+      address: tx.to
+    });
+    if (!wallet) continue;
+
+    const exists = await Ledger.findOne({ txHash: tx.hash });
+    if (exists) continue;
+
+    const amount = Number(tx.value);
+
+    await Balance.updateOne(
+      { userId: wallet.userId, tokenId: token._id },
+      { $inc: { balance: amount } },
+      { upsert: true }
+    );
+
+    await Ledger.create({
+      userId: wallet.userId,
+      networkId: network._id,
+      tokenId: token._id,
+      txHash: tx.hash,
+      type: 'DEPOSIT',
+      amount
+    });
+  }
+};
+
+

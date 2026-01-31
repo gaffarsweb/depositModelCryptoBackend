@@ -1,1 +1,3 @@
 # depositModelCryptoBackend
+
+node_modules
