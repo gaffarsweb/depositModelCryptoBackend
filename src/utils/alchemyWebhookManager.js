@@ -20,22 +20,26 @@ async function assignAddressToWebhook(networkId, address) {
         throw new Error('Network not found');
     }
 
-    // 2️⃣ If none, create new webhook
-    if (!webhook) {
-        webhook = await createNewAlchemyWebhook(network);
+   
+
+    if (webhook) {
+        await axios.post(
+            `https://dashboard.alchemy.com/api/webhooks/${webhook.webhookId}/addresses`,
+            { addresses: [address] },
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.ALCHEMY_TOKEN}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
     }
 
+     // 2️⃣ If none, create new webhook
+    if (!webhook) {
+        webhook = await createNewAlchemyWebhook(network, address);
+    }
     // 3️⃣ Add address to Alchemy
-    await axios.post(
-        `https://dashboard.alchemy.com/api/webhooks/${webhook.webhookId}/addresses`,
-        { addresses: [address] },
-        {
-            headers: {
-                Authorization: `Bearer ${process.env.ALCHEMY_TOKEN}`,
-                'Content-Type': 'application/json'
-            }
-        }
-    );
 
     // 4️⃣ Save mapping
     await WebhookAddress.create({

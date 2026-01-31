@@ -4,6 +4,7 @@ const Balance = require('../models/Balance');
 const Ledger = require('../models/Ledger');
 const Network = require('../models/Network');
 const Token = require('../models/Token');
+const Webhook = require('../models/Webhook');
 
 exports.getStats = async (req, res) => {
   const users = await User.countDocuments();
@@ -79,4 +80,78 @@ exports.createToken = async (req, res) => {
 exports.getTokens = async (req, res) => {
   const tokens = await Token.find().populate('networkId');
   res.json(tokens);
+};
+
+/**
+ * CREATE WEBHOOK (manual or Alchemy auto)
+ */
+exports.createWebhook = async (req, res) => {
+  const { networkId, webhookId } = req.body;
+
+  const network = await Network.findById(networkId);
+  if (!network) return res.status(404).json({ message: 'Network not found' });
+
+  const exists = await Webhook.findOne({ webhookId });
+  if (exists) return res.status(400).json({ message: 'Webhook already exists' });
+
+  const webhook = await Webhook.create({ networkId, webhookId });
+  res.json(webhook);
+};
+
+/**
+ * LIST WEBHOOKS + ADDRESS COUNT
+ */
+exports.getWebhooks = async (req, res) => {
+  const webhooks = await Webhook.aggregate([
+    {
+      $lookup: {
+        from: 'webhookaddresses',
+        localField: 'webhookId',
+        foreignField: 'webhookId',
+        as: 'addresses'
+      }
+    },
+    {
+      $project: {
+        webhookId: 1,
+        networkId: 1,
+        addressCount: { $size: '$addresses' },
+        isActive: 1
+      }
+    }
+  ]);
+
+  res.json(webhooks);
+};
+exports.getNetworksWithTokens = async (req, res) => {
+  const networks = await Network.aggregate([
+    {
+      $lookup: {
+        from: 'tokens',
+        localField: '_id',
+        foreignField: 'networkId',
+        as: 'tokens'
+      }
+    },
+    {
+      $project: {
+        name: 1,
+        chainKey: 1,
+        chainId: 1,
+        rpcUrl: 1,
+        type: 1,
+        isEnabled: 1,
+        tokens: {
+          _id: 1,
+          symbol: 1,
+          address: 1,
+          decimals: 1,
+          type: 1,
+          isEnabled: 1
+        }
+      }
+    }
+  ]);
+
+  res.json(networks);
 };

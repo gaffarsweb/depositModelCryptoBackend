@@ -9,10 +9,10 @@ exports.getProfile = async (req, res) => {
 };
 
 exports.getWallet = async (req, res) => {
-  const wallet = await Wallet.findOne({
+  const wallet = await Wallet.find({
     userId: req.user.id,
     type: 'BUFFER'
-  }).select('address chain');
+  }).select('address chain type networkId');
 
   res.json(wallet);
 };

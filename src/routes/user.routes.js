@@ -9,10 +9,10 @@ const userController = require('../controllers/user.controller');
 router.get('/me', auth, role('USER'), userController.getProfile);
 
 // Wallet info (deposit address)
-router.get('/wallet', auth, role('USER'), userController.getWallet);
+router.get('/wallets', auth, role('USER'), userController.getWallet);
 
 // Balance
-router.get('/balance', auth, role('USER'), userController.getBalance);
+router.get('/balances', auth, role('USER'), userController.getBalance);
 
 // Withdrawal request
 router.post('/withdraw', auth, role('USER'), userController.requestWithdraw);

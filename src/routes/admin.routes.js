@@ -27,8 +27,20 @@ router.post('/withdrawals/approve/:ledgerId', auth, role('ADMIN'), adminControll
 // Networks
 router.post('/networks', auth, role('ADMIN'), adminController.createNetwork);
 router.get('/networks', auth, role('ADMIN'), adminController.getNetworks);
+router.get(
+  '/networks-full',
+  auth,
+  role('ADMIN'),
+  adminController.getNetworksWithTokens
+);
 
 // Tokens
 router.post('/tokens', auth, role('ADMIN'), adminController.createToken);
 router.get('/tokens', auth, role('ADMIN'), adminController.getTokens);
+
+
+// Webhooks
+router.post('/webhooks', auth, role('ADMIN'), adminController.createWebhook);
+router.get('/webhooks', auth, role('ADMIN'), adminController.getWebhooks);
+
 module.exports = router;
