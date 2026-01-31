@@ -20,22 +20,26 @@ async function assignAddressToWebhook(networkId, address) {
         throw new Error('Network not found');
     }
 
-   
+
 
     if (webhook) {
-        await axios.post(
-            `https://dashboard.alchemy.com/api/webhooks/${webhook.webhookId}/addresses`,
-            { addresses: [address] },
+        await axios.patch(
+            'https://dashboard.alchemy.com/api/update-webhook-addresses',
+            {
+                webhook_id: webhook?.webhookId,
+                addresses_to_add: [address],   // add this address
+                addresses_to_remove: []        // no removal here
+            },
             {
                 headers: {
-                    Authorization: `Bearer ${process.env.ALCHEMY_TOKEN}`,
+                    'X-Alchemy-Token': process.env.ALCHEMY_TOKEN,
                     'Content-Type': 'application/json'
                 }
             }
         );
     }
 
-     // 2️⃣ If none, create new webhook
+    // 2️⃣ If none, create new webhook
     if (!webhook) {
         webhook = await createNewAlchemyWebhook(network, address);
     }
