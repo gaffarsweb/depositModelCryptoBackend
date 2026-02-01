@@ -15,7 +15,7 @@ exports.handleAlchemyEvm = async (payload) => {
   for (const tx of activities) {
     console.log('trans', tx)
     const network = await Network.findOne({
-      chainId: Number(tx.chainId),
+      chainKey: tx?.asset,
       type: 'EVM',
       isEnabled: true
     });
