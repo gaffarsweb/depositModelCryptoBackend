@@ -40,8 +40,8 @@ exports.handleAlchemyEvm = async (payload) => {
     if (!token) continue;
 
     const wallet = await Wallet.findOne({
-      networkId: network._id,
-      address: tx.to
+      networkId: network?._id,
+      address: tx?.toAddress
     });
     console.log('wallet', wallet);
     if (!wallet) continue;
