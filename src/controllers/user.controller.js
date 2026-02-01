@@ -46,8 +46,29 @@ exports.requestWithdraw = async (req, res) => {
 };
 
 exports.getTransactions = async (req, res) => {
-  const txs = await Ledger.find({ userId: req.user.id }).sort({ createdAt: -1 });
-  res.json(txs);
+  const txs = await Ledger.find({ userId: req.user.id })
+    .populate({
+      path: 'tokenId',       // populate token
+      select: 'symbol name' // include network name if stored there
+    })
+    .sort({ createdAt: -1 });
+
+  const formatted = txs.map(tx => ({
+    _id: tx._id,
+    type: tx.type,
+    amount: tx.amount,
+    status: tx.status,
+    createdAt: tx.createdAt,
+    token: {
+      symbol: tx.tokenId?.symbol,
+      name: tx.tokenId?.name
+    },
+    network: {
+      name: tx.tokenId?.name || 'Unknown'
+    }
+  }));
+
+  res.json(formatted);
 };
 
 
