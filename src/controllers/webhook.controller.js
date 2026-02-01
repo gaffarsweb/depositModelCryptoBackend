@@ -19,15 +19,21 @@ exports.handleAlchemyEvm = async (payload) => {
     });
     if (!network) continue;
 
-    const token = tx.asset === network.nativeSymbol
-      ? await Token.findOne({
+    let token;
+
+    if (!tx.rawContract?.address) {
+      // Native coin
+      token = await Token.findOne({
         networkId: network._id,
         isNative: true
-      })
-      : await Token.findOne({
-        networkId: network._id,
-        address: tx.rawContract?.address
       });
+    } else {
+      // ERC20
+      token = await Token.findOne({
+        networkId: network._id,
+        address: tx.rawContract.address.toLowerCase()
+      });
+    }
 
     if (!token) continue;
 
