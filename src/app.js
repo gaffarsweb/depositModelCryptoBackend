@@ -10,6 +10,13 @@ const webhookRoutes = require('./routes/webhook.routes');
 
 const app = express();
 
+
+/**
+ * ✅ Webhooks FIRST (no CORS issues, fast)
+ */
+app.use('/api/webhooks', express.json({ type: '*/*' }));
+app.use('/api/webhooks', webhookRoutes);
+
 app.use(cors({
     origin: [
         'http://localhost:3000', // local react
@@ -25,7 +32,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/webhooks', webhookRoutes);
+// app.use('/api/webhooks', webhookRoutes);
 
 
 // const  testSolanaWalletGeneration = async () => {
