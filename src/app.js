@@ -10,7 +10,16 @@ const webhookRoutes = require('./routes/webhook.routes');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        'http://localhost:3000', // local react
+        'http://localhost:5173', // local react
+        'https://depositmodule.onrender.com' // production frontend (if any)
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
