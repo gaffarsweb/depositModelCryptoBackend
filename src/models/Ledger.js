@@ -9,7 +9,12 @@ const ledgerSchema = new mongoose.Schema({
   },
   asset: String,
   amount: Number,
-  status: { type: String, default: 'CONFIRMED' }
+  status: { type: String, default: 'CONFIRMED' },
+  tokenId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Token',
+    required: false
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Ledger', ledgerSchema);

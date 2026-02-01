@@ -60,11 +60,10 @@ exports.handleAlchemyEvm = async (req, res) => {
 
     await Ledger.create({
       userId: wallet.userId,
-      networkId: network._id,
       tokenId: token._id,
       txHash: tx.hash,
       type: 'DEPOSIT',
-      amount
+      amount,
     });
 
 
