@@ -34,20 +34,21 @@ exports.handleAlchemyEvm = async (payload) => {
         address: tx.rawContract.address.toLowerCase()
       });
     }
-
+    console.log('token', token);
     if (!token) continue;
 
     const wallet = await Wallet.findOne({
       networkId: network._id,
       address: tx.to
     });
+    console.log('wallet', wallet);
     if (!wallet) continue;
-
     const exists = await Ledger.findOne({ txHash: tx.hash });
+    console.log('exists', exists);
     if (exists) continue;
 
     const amount = Number(tx.value);
-
+    console.log('amount', amount);
     await Balance.updateOne(
       { userId: wallet.userId, tokenId: token._id },
       { $inc: { balance: amount } },
