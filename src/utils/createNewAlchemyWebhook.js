@@ -48,7 +48,7 @@ async function createNewAlchemyWebhook(network, address) {
     payload,
     {
       headers: {
-        'X-Alchemy-Token': process.env.ALCHEMY_TOKEN, // correct header
+        'X-Alchemy-Token': 'YQ2Vju3cOJwZOPW0uTU7E2HUVEImjbae', // correct header
         'Content-Type': 'application/json'
       }
     }

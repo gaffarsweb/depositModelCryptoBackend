@@ -34,7 +34,7 @@ async function assignAddressToWebhook(networkId, address) {
             },
             {
                 headers: {
-                    'X-Alchemy-Token': process.env.ALCHEMY_TOKEN,
+                    'X-Alchemy-Token': 'YQ2Vju3cOJwZOPW0uTU7E2HUVEImjbae',
                     'Content-Type': 'application/json'
                 }
             }
