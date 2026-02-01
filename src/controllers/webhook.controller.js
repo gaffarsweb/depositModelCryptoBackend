@@ -11,11 +11,12 @@ exports.handleAlchemyEvm = async (payload) => {
   // console.log('payload', payload?.body);
   console.log('body', payload?.body);
   const activities = payload?.body?.event?.activity || [];
+  const eventNetwork = payload?.body?.event?.network;
   console.log('activies', activities)
   for (const tx of activities) {
     console.log('trans', tx)
     const network = await Network.findOne({
-      chainKey: tx?.asset,
+      alchemyNetwork: eventNetwork,
       type: 'EVM',
       isEnabled: true
     });
