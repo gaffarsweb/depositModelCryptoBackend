@@ -7,11 +7,11 @@ const Network = require('../models/Network');
 const Token = require('../models/Token');
 
 
-exports.handleAlchemyEvm = async (payload) => {
-  // console.log('payload', payload?.body);
-  console.log('body', payload?.body);
-  const activities = payload?.body?.event?.activity || [];
-  const eventNetwork = payload?.body?.event?.network;
+exports.handleAlchemyEvm = async (req, res) => {
+  // console.log('req', req?.body);
+  console.log('body', req?.body);
+  const activities = req?.body?.event?.activity || [];
+  const eventNetwork = req?.body?.event?.network;
   console.log('activies', activities)
   for (const tx of activities) {
     console.log('trans', tx)
@@ -48,7 +48,7 @@ exports.handleAlchemyEvm = async (payload) => {
     if (!wallet) continue;
     const exists = await Ledger.findOne({ txHash: tx.hash });
     console.log('exists', exists);
-    if (exists) return { success: true };;
+    if (exists) continue;
 
     const amount = Number(tx.value);
     console.log('amount', amount);
@@ -69,6 +69,7 @@ exports.handleAlchemyEvm = async (payload) => {
 
 
   }
+   res.status(200).json({ success: true });
   return { success: true };
 };
 
