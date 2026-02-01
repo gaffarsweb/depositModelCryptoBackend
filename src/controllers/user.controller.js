@@ -9,17 +9,48 @@ exports.getProfile = async (req, res) => {
 };
 
 exports.getWallet = async (req, res) => {
-  const wallet = await Wallet.find({
-    userId: req.user.id,
-    type: 'BUFFER'
-  }).select('address chain type networkId');
+ const wallets = await Wallet.find({
+      userId: req.user.id,
+      type: 'BUFFER'
+    }).populate({
+      path: 'networkId',       // the field in Wallet schema
+      select: 'name'           // we only need the network name
+    }).select('address chain type networkId');
 
-  res.json(wallet);
+    // Format response
+    const formatted = wallets.map(w => ({
+      _id: w._id,
+      address: w.address,
+      chain: w.chain,
+      type: w.type,
+      network: w.networkId?.name || 'Unknown'
+    }));
+
+    res.json(formatted);
 };
 
 exports.getBalance = async (req, res) => {
-  const balances = await Balance.find({ userId: req.user.id });
-  res.json(balances);
+  // Find balances for the user and populate tokenId
+  const balances = await Balance.find({ userId: req.user.id })
+    .populate({
+      path: 'tokenId',                // populate token info
+      select: 'symbol name' // get symbol, token name, and networkName
+    });
+
+  // Format for frontend
+  const formatted = balances.map(b => ({
+    _id: b._id,
+    balance: b.balance,
+    token: {
+      symbol: b.tokenId?.symbol,
+      name: b.tokenId?.name
+    },
+    network: {
+      name: b.tokenId?.name || 'Unknown'
+    }
+  }));
+
+  res.json(formatted);
 };
 
 exports.requestWithdraw = async (req, res) => {
