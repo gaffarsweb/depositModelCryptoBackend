@@ -11,8 +11,8 @@ async function createWallet(network) {
     case 'EVM': {
       const wallet = EvmWallet.createRandom();
       return {
-        address: wallet.address,
-        privateKey: wallet.privateKey
+        address: wallet?.address?.toLowerCase(),
+        privateKey: wallet?.privateKey?.toLowerCase()
       };
     }
 
@@ -27,8 +27,8 @@ async function createWallet(network) {
       const address = keypair.publicKey.toBase58();
 
       return {
-        address,       // Solana public key
-        privateKey,    // Solana private key
+        address :address.toLowerCase(),       // Solana public key
+        privateKey:privateKey.toLowerCase(),    // Solana private key
         mnemonic       // optional: store mnemonic for recovery
       };
     }

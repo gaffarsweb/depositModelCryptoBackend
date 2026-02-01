@@ -41,7 +41,7 @@ exports.handleAlchemyEvm = async (payload) => {
 
     const wallet = await Wallet.findOne({
       networkId: network?._id,
-      address: tx?.toAddress
+      address: tx?.toAddress.toLowerCase()
     });
     console.log('wallet', wallet);
     if (!wallet) continue;
