@@ -27,6 +27,8 @@ exports.register = async (req, res) => {
     if(!wallet) continue;
     if(network?.type === 'EVM') {
      await assignAddressToWebhook(network?._id, wallet?.address);
+    }else if(network?.type === 'SOLANA') {
+      await assignAddressToWebhook(network?._id, wallet?.address);
     }
 
     await WalletModel.create({

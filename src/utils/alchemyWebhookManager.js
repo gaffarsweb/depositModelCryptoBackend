@@ -19,7 +19,9 @@ async function assignAddressToWebhook(networkId, address) {
     if (!network) {
         throw new Error('Network not found');
     }
-
+    if(network.type !== 'EVM') {
+        return;
+    }
 
 
     if (webhook) {
