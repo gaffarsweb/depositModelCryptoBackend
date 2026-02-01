@@ -64,7 +64,10 @@ exports.handleAlchemyEvm = async (payload) => {
       type: 'DEPOSIT',
       amount
     });
+
+
   }
+  return { success: true };
 };
 
 
