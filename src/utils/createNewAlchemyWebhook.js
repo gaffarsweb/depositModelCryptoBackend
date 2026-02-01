@@ -13,21 +13,21 @@ async function createNewAlchemyWebhook(network, address) {
   let payload = {
     network: network.alchemyNetwork,       // e.g., "ETH_GOERLI"
     webhook_type: 'ADDRESS_ACTIVITY',      // must be 'webhook_type'
-    webhook_url: 'https://toolstack.fun/', // your webhook endpoint
+    webhook_url: 'https://depositmodule.onrender.com/api/webhooks/alchemyevm', // your webhook endpoint
     // array of addresses
   };
   switch (network?.type) {
     case 'EVM': {
       payload.webhook_type = 'ADDRESS_ACTIVITY';
       payload.addresses = addresses;
-      payload.webhook_url = 'https://toolstack.fun/';
+      payload.webhook_url = 'https://depositmodule.onrender.com/api/webhooks/alchemyevm';
       break;
     }
     case 'SOLANA': {
       payload = {
         network: network.alchemyNetwork, // SOLANA_MAINNET
         webhook_type: 'ACCOUNT_ACTIVITY',
-        webhook_url: 'https://toolstack.fun/',
+        webhook_url: 'https://depositmodule.onrender.com/api/webhooks/alchemyevm',
         accounts: network.addressesToTrack || [address],
       };
       break;
