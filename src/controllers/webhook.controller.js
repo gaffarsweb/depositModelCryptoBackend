@@ -8,6 +8,7 @@ const Token = require('../models/Token');
 
 
 exports.handleAlchemyEvm = async (payload) => {
+  console.log('payload', payload);
   const activities = payload.event?.activity || [];
   console.log('activies', activities)
   for (const tx of activities) {
