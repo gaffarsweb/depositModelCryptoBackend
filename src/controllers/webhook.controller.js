@@ -47,7 +47,7 @@ exports.handleAlchemyEvm = async (payload) => {
     if (!wallet) continue;
     const exists = await Ledger.findOne({ txHash: tx.hash });
     console.log('exists', exists);
-    if (exists) return { success: true };;
+    if (exists) continue;
 
     const amount = Number(tx.value);
     console.log('amount', amount);
