@@ -11,7 +11,8 @@ const TokenSchema = new mongoose.Schema({
     ref: 'Network'
   },
   isNative: Boolean,
-  isEnabled: { type: Boolean, default: true }
+  isEnabled: { type: Boolean, default: true },
+  minDepositAmount: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model('Token', TokenSchema);
